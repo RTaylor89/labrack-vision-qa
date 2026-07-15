@@ -133,4 +133,4 @@ labrack-vision-qa/
 
 ## AI Usage Log
 
-I will maintain `docs/AI_usage_log.md` throughout the project. It documents how I used AI tools for planning, code debugging, explanation, and slide drafting. I verify outputs manually and make sure the final project reflects my own understanding and implementation.
+We will maintain `docs/AI_usage_log.md` throughout the project. It documents how we used AI tools for planning, code debugging, explanation, and slide drafting. I verify outputs manually and make sure the final project reflects my own understanding and implementation.
