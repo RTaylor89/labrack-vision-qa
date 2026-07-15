@@ -123,7 +123,7 @@ labrack-vision-qa/
 │   ├── README.md
 │   └── dataset.yaml    # YOLO classes + train/val/test paths
 ├── docs/
-│   ├── MD_Taylor_Roderick_ITAI1378.pptx
+│   ├── proposal.pdf
 │   └── AI_usage_log.md
 ├── notebooks/
 │   └── 01_exploration.ipynb
