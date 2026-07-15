@@ -11,7 +11,7 @@
 
 **Tier 1: Core Project**
 
-I am choosing Tier 1 because this project is focused, realistic, and demo-friendly. It uses pretrained computer vision models with a small staged dataset instead of trying to build a production lab system from scratch.
+We are choosing Tier 1 because this project is focused, realistic, and demo-friendly. It uses pretrained computer vision models with a small staged dataset instead of trying to build a production lab system from scratch.
 
 ## Problem Statement
 
@@ -62,7 +62,7 @@ YOLO11 fits the project because the core task is finding and labeling objects in
 | ------------------- | ------------------------------------------------------ | ------------------------------------ |
 | Blueprint           | Plan approved                                          | Midterm submitted                    |
 | First Working Demo  | Run pretrained YOLO11/YOLO11-seg on staged rack images | End-to-end pipeline works            |
-| Make It Yours       | Add my staged dataset, labels, and QA logic            | System works on the lab rack problem |
+| Making It Ours      | Add our staged dataset, labels, and QA logic            | System works on the lab rack problem |
 | Improve and Measure | Tune thresholds, test results, record metrics          | Metrics documented                   |
 | Package and Present | Final README, demo notebook, slides, and video         | Final submitted                      |
 
@@ -79,10 +79,29 @@ Plan B: Use only staged images with empty tubes, fake labels, and no patient dat
 
 ## Resources Needed
 
-- **Compute:** Google Colab free GPU or local VSCode/Jupyter
+- **Compute:** Local GPU (RTX 4090) on VSCode/Jupyter
 - **Tools:** Python, Ultralytics, OpenCV, Roboflow or Label Studio, GitHub
-- **Cost:** $0 expected
-- **Optional:** Small labeling/API cost only if needed later
+- **Cost:** Negligible, running on personally owned hardware.
+
+## Getting Started
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+# Analyze one staged rack image (pretrained yolo11n.pt downloads on first run)
+python -m src.run --image input/rack_001.jpg
+```
+
+For `input/rack_001.jpg` this writes `output/rack_001_annotated.jpg`,
+`output/rack_001_results.json`, and `output/rack_001_summary.txt`.
+
+Options: `--output-dir`, `--model` (swap in fine-tuned weights), `--conf`
+(detection threshold). Run the QA-rule and validation tests with `pytest`.
+
+> Note: the demo uses pretrained `yolo11n.pt`, whose COCO classes are not lab
+> objects — the pipeline runs end to end, but real rack/tube/cap counts require
+> a fine-tuned model. Point `MODEL_PATH` in `src/config.py` at your weights.
 
 ## Repository Structure
 
@@ -90,13 +109,26 @@ Plan B: Use only staged images with empty tubes, fake labels, and no patient dat
 labrack-vision-qa/
 ├── README.md
 ├── requirements.txt
+├── src/
+│   ├── config.py       # model, thresholds, class names, colors — one place
+│   ├── detector.py     # YOLO11 inference only
+│   ├── qa_rules.py     # counts, cap-vs-tube, empty slots, low-confidence flags
+│   ├── annotate.py     # draw boxes/labels, save annotated image
+│   ├── report.py       # JSON results + plain-text QA summary
+│   └── run.py          # CLI: one image -> annotated + JSON + summary
+├── tests/
+│   ├── test_qa_rules.py
+│   └── test_io.py
 ├── data/
-│   └── README.md
+│   ├── README.md
+│   └── dataset.yaml    # YOLO classes + train/val/test paths
 ├── docs/
-│   ├── proposal.pdf
+│   ├── MD_Taylor_Roderick_ITAI1378.pptx
 │   └── AI_usage_log.md
-└── notebooks/
-    └── 01_exploration.ipynb
+├── notebooks/
+│   └── 01_exploration.ipynb
+├── input/              # place staged images here
+└── output/             # generated results
 ```
 
 ## AI Usage Log
