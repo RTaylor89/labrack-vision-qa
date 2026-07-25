@@ -1,12 +1,12 @@
 """
-config.py — one central place for every setting the project uses.
+config.py — Central place for every setting the project uses.
 
-Why have a config file at all?
+Why do we have a config file at all?
     As the project grows, the same values (which model, what confidence cutoff,
     what the classes are called) get used in several files. If those values were
     copy-pasted around, changing one would mean hunting through the whole
     codebase. Instead we put them here once and every other module imports them.
-    This is a common pattern: "single source of truth."
+    This is a common enterprise pattern: "single source of truth."
 
 Nothing in here does real work — it only holds values and one small helper.
 """
