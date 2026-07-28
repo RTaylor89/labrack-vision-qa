@@ -121,17 +121,19 @@ class RackDetector:
         )
         result = results[0]
         '''
-        Gemini helped here. I was struggling with the tensor logic so I had Gemini help me troubleshoot
-        and explain this portion via comments
+        Gemini helped here. I was struggling to understand that the model's output is
+        a tensor(boxes[box]). So I had Gemini help me troubleshoot and explain this portion via comments
+        and then rewrote the comments to make sure I understood.
         '''
         detections = []
         boxes = result.boxes  # can be None if the model found nothing
         if boxes is not None:
             for box in boxes:
                 class_id = int(box.cls)
-                # box.xyxy[0] is a tensor of [x1, y1, x2, y2] as floats. We
-                # convert each to a whole-number pixel coordinate.
-                x1, y1, x2, y2 = (int(v) for v in box.xyxy[0].tolist())
+                # box.xyxy[0] is a tensor of [x1, y1, x2, y2] as floats (The box corners). 
+                # Here you convert each to a whole-number pixel coordinate.
+                x1, y1, x2, y2 = (int(v) for v in box.xyxy[0].tolist()) #.tolist() makes a list of floats
+                # detections.append builds 1 detection dict per box
                 detections.append({
                     "class_id": class_id,
                     # result.names maps a class_id number to its text label.
@@ -140,7 +142,7 @@ class RackDetector:
                     "box": [x1, y1, x2, y2],
                 })
 
-        # ultralytics reports the image shape as (height, width). We flip it to
+        # ultralytics reports the image shape as (height, width). I flip it to
         # (width, height) because that is the order that makes the most sense to me (Roderick).
         height, width = result.orig_shape
         return {
