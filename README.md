@@ -194,8 +194,10 @@ python -m src.run \
 The fine-tuned checkpoint must exist at `weights/labrack_yolo11s_960.pt`. Model
 weights are generated artifacts and are intentionally ignored by Git. The
 selected checkpoint is published with the `v1.0.0` GitHub release as
-`labrack_yolo11s_960.pt`; place that file in `weights/`. To reproduce it from
-the staged dataset instead:
+[`labrack_yolo11s_960.pt`](https://github.com/RTaylor89/labrack-vision-qa/releases/download/v1.0.0/labrack_yolo11s_960.pt);
+place that file in `weights/`. Its SHA-256 is
+`3fa53efd7a2417b5a20812accd79e6d1eda54e71cbf0ed95f4e8825faf7a4246`.
+To reproduce it from the staged dataset instead:
 
 ```bash
 yolo detect train model=yolo11s.pt data=data/dataset.yaml \
