@@ -1,0 +1,96 @@
+{
+  "image_path": "data/images/test/Rack_D_image00304_jpg.rf.DzfIrdoLsLIpJhLkkOfw.jpg",
+  "image_size": [
+    5696,
+    4272
+  ],
+  "model": "weights/labrack_yolo11n.pt",
+  "generated_utc": "2026-07-29T16:49:55+00:00",
+  "counts": {
+    "cap": 5,
+    "rack": 1
+  },
+  "core_counts": {
+    "rack": 1,
+    "tube": 0,
+    "cap": 5,
+    "empty_slot": 0
+  },
+  "detections": [
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.7675,
+      "box": [
+        2590,
+        1690,
+        2715,
+        1815
+      ]
+    },
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.681,
+      "box": [
+        3055,
+        1777,
+        3197,
+        1909
+      ]
+    },
+    {
+      "class_id": 0,
+      "class_name": "rack",
+      "confidence": 0.383,
+      "box": [
+        1981,
+        1434,
+        3695,
+        3249
+      ]
+    },
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.3816,
+      "box": [
+        2892,
+        1745,
+        3031,
+        1882
+      ]
+    },
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.3405,
+      "box": [
+        2868,
+        1907,
+        3001,
+        2050
+      ]
+    },
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.3271,
+      "box": [
+        3036,
+        1934,
+        3167,
+        2065
+      ]
+    }
+  ],
+  "flags": [
+    {
+      "level": "review",
+      "message": "4 detection(s) below the 0.50 confidence threshold \u2014 manual review recommended."
+    }
+  ],
+  "review_recommended": true,
+  "disclaimer": "Educational prototype only. Not validated for clinical, diagnostic, or production laboratory use. Human review is required.",
+  "inference_seconds": 0.681
+}

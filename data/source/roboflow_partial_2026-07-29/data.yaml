@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['cap', 'empty', 'rack']
+
+roboflow:
+  workspace: kates-workspace-jkgwd
+  project: labrack-vision-qa
+  version: dataset
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/kates-workspace-jkgwd/labrack-vision-qa/dataset/dataset

@@ -1,0 +1,14 @@
+# YOLO dataset definition for LabRack Vision QA.
+# We will fill in the train/val/test paths once staged images are labeled.
+# Paths are relative to the repository root when commands run from there.
+
+path: data
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: rack
+  1: tube
+  2: cap
+  3: empty_slot

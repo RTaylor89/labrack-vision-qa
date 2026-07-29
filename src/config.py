@@ -15,14 +15,15 @@ from pathlib import Path  # pathlib gives us nice, OS-safe file paths
 
 
 # --- Model -----------------------------------------------------------------
-# Which model weights to load. We start with the pretrained "nano" YOLO11 model
-# (yolo11n.pt) because it is small, fast, and downloads automatically the first
-# time it is used. It is only a placeholder: its built-in classes are everyday
-# COCO objects (person, bottle, etc.), NOT lab racks and tubes.
-#
-# Later, after we train our own model, we just change this ONE line to point at
-# our trained weights, for example:  MODEL_PATH = "weights/labrack_yolo11n.pt"
-MODEL_PATH = "yolo11n.pt"
+# Fine-tuned YOLO11s checkpoint selected from the staged project dataset.
+# The weights directory is ignored by Git because model binaries are generated
+# artifacts; see the README for the exact training command used to reproduce it.
+MODEL_PATH = "weights/labrack_yolo11s_960.pt"
+
+# The selected model was trained and validated at 960 pixels. Keeping the same
+# size for inference avoids silently throwing away the small-object resolution
+# that improved empty-slot recall.
+INFERENCE_IMAGE_SIZE = 960
 
 
 # --- Detection thresholds --------------------------------------------------
@@ -43,9 +44,9 @@ REVIEW_CONFIDENCE = 0.50
 # (an unchangeable list) because these names are fixed labels, not data that
 # should be edited at runtime.
 #
-# Important teaching point: the pretrained yolo11n model will never output these
-# names, so their counts will be zero until we use a trained model. The QA layer
-# is written to handle that honestly instead of pretending the objects exist.
+# The selected fine-tuned model uses these exact names. The QA layer still
+# supplies zero counts when a class is not detected so downstream output keeps
+# a predictable four-class shape.
 CORE_CLASSES = ("rack", "tube", "cap", "empty_slot")
 
 

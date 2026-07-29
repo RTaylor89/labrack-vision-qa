@@ -28,6 +28,7 @@ def build_results(detection_output, qa_result, inference_seconds=None):
         "image_path": detection_output["image_path"],
         "image_size": detection_output["image_size"],
         "model": detection_output["model"],
+        "inference_image_size": detection_output.get("inference_image_size"),
         # isoformat() gives a standard, sortable timestamp like
         # "2026-07-14T21:00:00+00:00". We use UTC so it is unambiguous.
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),

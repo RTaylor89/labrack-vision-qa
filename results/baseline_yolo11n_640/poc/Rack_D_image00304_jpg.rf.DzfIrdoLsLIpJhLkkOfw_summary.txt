@@ -1,0 +1,18 @@
+LabRack Vision QA — Summary
+================================
+Image:  Rack_D_image00304_jpg.rf.DzfIrdoLsLIpJhLkkOfw.jpg
+Model:  weights/labrack_yolo11n.pt
+Time:   0.681 s
+
+Counts (core classes):
+  rack         1
+  tube         0
+  cap          5
+  empty_slot   0
+
+QA flags:
+  [REVIEW] 4 detection(s) below the 0.50 confidence threshold — manual review recommended.
+
+Manual review recommended.
+
+Educational prototype only. Not validated for clinical, diagnostic, or production laboratory use. Human review is required.

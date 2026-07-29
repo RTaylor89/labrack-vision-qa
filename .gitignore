@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.cache
+*.inspect.ndjson
+
+# Generated training and inference artifacts.
+runs/
+weights/
+*.pt
+output/*
+!output/.gitkeep
+
+# Dataset images and labels are intentionally not ignored so peers can validate
+# the staged, non-patient dataset.

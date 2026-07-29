@@ -7,6 +7,11 @@
 - Roderick Taylor
 - Kate Leemann
 
+## Team Contributions
+
+- Kate Leemann contributed the staged laboratory photography, image
+  annotations, and testing methodology.
+
 ## Project Tier
 
 **Tier 1: Core Project**
@@ -25,36 +30,128 @@ LabRack Vision QA takes a photo of a staged lab sample rack and returns an annot
 
 The first version focuses on still images. The final capstone extension could add video, SAM-style promptable segmentation, a small dashboard, or an exportable QA report.
 
+## Current Build Status
+
+Version 1 runs end to end on staged, non-patient still images:
+
+1. validate an image path;
+2. run a fine-tuned Ultralytics YOLO11s object detector at 960 pixels;
+3. count detected rack, cap, and empty-slot objects;
+4. describe possible issues that require human review; and
+5. write an annotated image, structured JSON, and a plain-text summary.
+
+The current partial dataset does not contain usable tube annotations. Tube
+detection is therefore a roadmap goal and is not included in the reported
+model performance. See [`data/README.md`](data/README.md) for provenance,
+class remapping, and split details.
+
 ## Technical Approach
 
-- **CV technique:** Object detection and instance segmentation
-- **Model:** YOLO11 and YOLO11-seg
+- **CV technique:** Object detection
+- **Model:** Fine-tuned YOLO11s at 960-pixel input
 - **Framework:** Python, Ultralytics, OpenCV, VSCode/Jupyter
 
-YOLO11 fits the project because the core task is finding and labeling objects in a photo. YOLO11-seg adds masks so bounding boxes can be compared against more precise object outlines when the image is crowded or when rack/tube boundaries overlap.
+YOLO11 fits the project because the core task is finding and labeling objects
+in a photo. Segmentation remains a possible later experiment if bounding boxes
+are not precise enough around crowded or overlapping objects.
 
-## Data Plan
+## Dataset
 
 - **Source:** Self-collected staged photos using empty tubes, racks, fake labels, and no PHI.
-- **Initial size:** 200–250 images for the first working demo.
-- **Target size:** 100–150 labeled staged images for training and validation.
-- **Holdout test set:** 50–100 images.
+- **Current partial import:** 140 images.
+- **Grouped split:** 125 train, 5 validation, and 10 held-out test images.
+- **Split rule:** rack groups A/B train, C validation, and D test, preventing
+  adjacent images of one physical rack from crossing splits.
 
-**Labels:**
+**Current labels:**
 
 - rack
-- tube
 - cap
-- empty slot
-- tilted tube or abnormal tube position, if labeling is consistent enough
+- empty_slot
+- tube (reserved class with zero current instances; roadmap goal)
 
 **Data handling rule:** No real patient labels, no real sample IDs, and no medical decision-making.
 
 ## Success Metrics
 
-- **Primary metric:** At least 0.75 mAP50 on the holdout test set for the core classes: rack, tube, cap, and empty slot.
+- **Primary target:** At least 0.75 mAP50 on the holdout test set for the
+  currently trained classes.
 - **Secondary metric:** Process one image and generate an annotated output plus a QA summary in under 3 seconds per image.
 - **Demo success:** The project produces an annotated rack image and a plain-English summary that a lab worker could quickly review.
+
+## Measured Results
+
+On 2026-07-29 I ran the planned model and image-size progression on an Apple M3
+Pro with PyTorch MPS. Model selection used the five-image Rack_C validation
+split. YOLO11s at 960 pixels was the clear winner, especially on the
+`empty_slot` class.
+
+| Candidate | Best epoch | Validation mAP50 | mAP50–95 | Empty-slot recall |
+|---|---:|---:|---:|---:|
+| YOLO11n / 640 baseline | 25 | 0.729 | 0.503 | 0.428 |
+| YOLO11n / 960 | 15 | 0.809 | 0.539 | 0.470 |
+| YOLO11s / 640 | 43 | 0.761 | 0.552 | 0.404 |
+| **YOLO11s / 960** | **82** | **0.825** | **0.594** | **0.858** |
+| YOLO11m / 640 | 32 | 0.730 | 0.520 | 0.381 |
+
+The selected validation result was:
+
+| Class | Instances | Precision | Recall | mAP50 | mAP50–95 |
+|---|---:|---:|---:|---:|---:|
+| all trained classes | 447 | 0.799 | 0.898 | 0.825 | 0.594 |
+| rack | 5 | 0.872 | 1.000 | 0.995 | 0.876 |
+| cap | 276 | 0.716 | 0.837 | 0.663 | 0.503 |
+| empty_slot | 166 | 0.807 | 0.858 | 0.817 | 0.405 |
+| tube | 0 | — | — | — | — |
+
+After fixing the configuration, I ran one diagnostic evaluation on the
+10-image Rack_D group. It produced aggregate mAP50 0.937, mAP50–95 0.601, and
+empty-slot recall 0.761. Rack_D had already informed this improvement cycle, so
+these numbers are useful diagnostic evidence but are not presented as a
+pristine final test of generalization.
+
+A real end-to-end example recorded 0.732 seconds for detection and 2.07 seconds
+of full CLI wall time, including startup, model loading, annotation, and report
+writing. On that difficult image, the annotation contains 81 empty slots and no
+caps; the selected model reported seven possible empty positions and one cap.
+That remains a possible issue requiring human review and demonstrates why this
+prototype cannot approve a rack autonomously.
+
+See [`results/README.md`](results/README.md), the metric plots in
+[`results/metrics/`](results/metrics/), and the real annotated samples in
+[`results/predictions/`](results/predictions/).
+
+## What Changed From the Blueprint
+
+- The Blueprint proposed segmentation; Version 1 ships object detection because
+  bounding boxes are sufficient for the current counting and review workflow.
+- The planned 200–250 images became a 140-image partial staged export.
+- The planned `tube` class is reserved but not measured because the current
+  images do not support consistent tube annotation.
+- Controlled candidate runs selected YOLO11s at 960 pixels instead of choosing
+  a model size in advance.
+
+The scope changed to fit the available staged data, while the end-to-end
+promise remained intact: one image produces an annotated image, JSON, and a
+plain-English summary for human review.
+
+## Challenges and Fixes
+
+- **Small empty slots:** 960-pixel input preserved more detail than the
+  640-pixel candidates.
+- **Adjacent-frame leakage:** rack-level grouping kept physical rack groups
+  separated across train, validation, and test.
+- **Apple MPS memory and portability:** one-epoch smoke tests established safe
+  batch sizes and `workers=0` before the full runs.
+
+## Lessons and Next Steps
+
+The pipeline works, but the dataset must grow. Grouped splits protect the
+evaluation, higher resolution helps small-slot detection, and a larger model
+alone did not improve the current validation result. The next bounded dataset
+milestone is a newly staged rack group with completed annotations, especially
+clearer tube examples. Any resulting QA finding remains a possible issue
+requiring human review.
 
 ## Milestone Plan
 
@@ -79,7 +176,7 @@ Plan B: Use only staged images with empty tubes, fake labels, and no patient dat
 
 ## Resources Needed
 
-- **Compute:** Local GPU (RTX 4090) on VSCode/Jupyter
+- **Compute used for this run:** Apple M3 Pro with PyTorch MPS.
 - **Tools:** Python, Ultralytics, OpenCV, Roboflow or Label Studio, GitHub
 - **Cost:** Negligible, running on personally owned hardware.
 
@@ -89,19 +186,43 @@ Plan B: Use only staged images with empty tubes, fake labels, and no patient dat
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# Analyze one staged rack image (pretrained yolo11n.pt downloads on first run)
-python -m src.run --image input/rack_001.jpg
+# Analyze one staged held-out image with the fine-tuned checkpoint
+python -m src.run \
+  --image data/images/test/Rack_D_image00304_jpg.rf.DzfIrdoLsLIpJhLkkOfw.jpg
 ```
 
-For `input/rack_001.jpg` this writes `output/rack_001_annotated.jpg`,
-`output/rack_001_results.json`, and `output/rack_001_summary.txt`.
+The fine-tuned checkpoint must exist at `weights/labrack_yolo11s_960.pt`. Model
+weights are generated artifacts and are intentionally ignored by Git. The
+selected checkpoint is published with the `v1.0.0` GitHub release as
+`labrack_yolo11s_960.pt`; place that file in `weights/`. To reproduce it from
+the staged dataset instead:
 
-Options: `--output-dir`, `--model` (swap in fine-tuned weights), `--conf`
-(detection threshold). Run the QA-rule and validation tests with `pytest`.
+```bash
+yolo detect train model=yolo11s.pt data=data/dataset.yaml \
+  epochs=100 patience=20 imgsz=960 batch=2 device=mps workers=0 seed=0 \
+  project=runs name=candidate_yolo11s_960 exist_ok=True plots=True
 
-> Note: the demo uses pretrained `yolo11n.pt`, whose COCO classes are not lab
-> objects — the pipeline runs end to end, but real rack/tube/cap counts require
-> a fine-tuned model. Point `MODEL_PATH` in `src/config.py` at your weights.
+mkdir -p weights
+cp runs/candidate_yolo11s_960/weights/best.pt \
+  weights/labrack_yolo11s_960.pt
+```
+
+Use `device=0` on a CUDA system or `device=cpu` when MPS is unavailable.
+Options for the POC command include `--output-dir`, `--model`, `--conf`, and
+`--imgsz`.
+Run all unit and dataset-validation tests with `pytest`.
+
+## Demo Video
+
+Demo video URL: **pending recording and upload**. The repository includes a
+timed 3–5 minute narration plan in
+[`docs/demo_script.md`](docs/demo_script.md). Replace this line with the final
+shareable video link before submission.
+
+For a clean Ubuntu workstation with an RTX 4090, follow the complete
+[`Ubuntu + RTX 4090 CLI runbook`](docs/CLI_RUNBOOK_UBUNTU_4090.md). The
+version-selectable, fully commented demonstration is in
+[`notebooks/02_full_pipeline_demo.ipynb`](notebooks/02_full_pipeline_demo.ipynb).
 
 ## Repository Structure
 
@@ -123,14 +244,26 @@ labrack-vision-qa/
 │   ├── README.md
 │   └── dataset.yaml    # YOLO classes + train/val/test paths
 ├── docs/
+│   ├── CLI_RUNBOOK_UBUNTU_4090.md
+│   ├── demo_script.md
+│   ├── FP_LabRackVisionQA_Taylor_ITAI1378.pptx
+│   ├── presentation.pdf
 │   ├── proposal.pdf
 │   └── AI_usage_log.md
+├── results/
+│   ├── metrics/
+│   ├── poc/
+│   └── predictions/
 ├── notebooks/
-│   └── 01_exploration.ipynb
-├── input/              # place staged images here
+│   ├── 01_exploration.ipynb
+│   └── 02_full_pipeline_demo.ipynb
+├── weights/            # generated checkpoint; ignored by Git
 └── output/             # generated results
 ```
 
 ## AI Usage Log
 
-We will maintain `docs/AI_usage_log.md` throughout the project. It documents how we used AI tools for planning, code debugging, explanation, and slide drafting. I verify outputs manually and make sure the final project reflects my own understanding and implementation.
+[`docs/AI_usage_log.md`](docs/AI_usage_log.md) documents how AI tools supported
+planning, debugging, implementation, verification, and presentation work. Each
+entry records what I learned and what I kept or changed after checking the
+result against the repository or a real run.

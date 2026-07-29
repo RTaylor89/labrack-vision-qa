@@ -1,0 +1,6 @@
+model,image_size,batch,epochs_completed,best_epoch,training_seconds,validation_map50,validation_map50_95,empty_slot_precision,empty_slot_recall,empty_slot_map50,empty_slot_map50_95,selected
+YOLO11n,640,8,30,25,455.318,0.729,0.503,0.579,0.428,0.519,0.204,no
+YOLO11n,960,2,35,15,997.699,0.809,0.539,0.775,0.470,0.731,0.295,no
+YOLO11s,640,4,63,43,1428.760,0.761,0.552,0.761,0.404,0.623,0.270,no
+YOLO11s,960,2,100,82,4028.400,0.825,0.594,0.807,0.858,0.817,0.405,yes
+YOLO11m,640,2,52,32,2074.840,0.730,0.520,0.742,0.381,0.532,0.183,no

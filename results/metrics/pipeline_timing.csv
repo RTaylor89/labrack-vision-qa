@@ -1,0 +1,3 @@
+measurement,seconds,notes
+detection_step,0.732,Recorded by the application on the selected Rack_D demo image
+full_cli_wall_time,2.070,Measured with /usr/bin/time including Python startup model load annotation and report writing

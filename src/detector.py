@@ -91,12 +91,13 @@ class RackDetector:
     """
 
     def __init__(self, model_path=config.MODEL_PATH,
-                 confidence_threshold=config.CONFIDENCE_THRESHOLD):
+                 confidence_threshold=config.CONFIDENCE_THRESHOLD,
+                 image_size=config.INFERENCE_IMAGE_SIZE):
         # Remember the settings so we can record them later in the report.
         self.model_path = model_path
         self.confidence_threshold = confidence_threshold
-        # Load the model once, up front. This may download yolo11n.pt on the
-        # very first run.
+        self.image_size = image_size
+        # Load the model once, up front.
         self.model = _load_model(model_path)
 
     def detect(self, image_path):
@@ -117,6 +118,7 @@ class RackDetector:
         results = self.model.predict(
             source=str(path),
             conf=self.confidence_threshold,
+            imgsz=self.image_size,
             verbose=False,
         )
         result = results[0]
@@ -148,6 +150,7 @@ class RackDetector:
         return {
             "image_path": str(path),
             "image_size": [width, height],
-            "model": self.model_path,
+            "model": str(self.model_path),
+            "inference_image_size": self.image_size,
             "detections": detections,
         }

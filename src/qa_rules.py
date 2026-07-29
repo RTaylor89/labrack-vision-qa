@@ -105,12 +105,13 @@ def run_qa_checks(detections,
                        f"{missing} possible uncapped tube(s), requires review.",
         })
 
-    # --- Check 3: empty positions => just report the number -----------------
+    # --- Check 3: possible empty positions => request human review ----------
     empty_count = core_counts.get("empty_slot", 0)
     if empty_count > 0:
         flags.append({
-            "level": "info",
-            "message": f"{empty_count} empty position(s) reported.",
+            "level": "review",
+            "message": f"{empty_count} possible empty position(s) detected — "
+                       "requires human review.",
         })
 
     # --- Check 4: shaky detections => ask a human to look -------------------

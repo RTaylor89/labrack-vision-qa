@@ -7,6 +7,7 @@ together in order: validate -> detect -> apply QA rules -> annotate -> report.
 Run it like this:
     python -m src.run --image input/rack_001.jpg
     python -m src.run --image input/rack_001.jpg --output-dir output --conf 0.3
+    python -m src.run --image input/rack_001.jpg --imgsz 960
 
 For input/rack_001.jpg it writes three files:
     output/rack_001_annotated.jpg
@@ -27,7 +28,8 @@ from .report import build_results, save_results
 
 def process_image(image_path, output_dir=config.DEFAULT_OUTPUT_DIR,
                   model_path=config.MODEL_PATH,
-                  confidence_threshold=config.CONFIDENCE_THRESHOLD):
+                  confidence_threshold=config.CONFIDENCE_THRESHOLD,
+                  image_size=config.INFERENCE_IMAGE_SIZE):
     """
     Run the complete pipeline on ONE image and write all three output files.
 
@@ -41,10 +43,10 @@ def process_image(image_path, output_dir=config.DEFAULT_OUTPUT_DIR,
     validate_image_path(image_path)
     paths = config.output_paths(image_path, output_dir)
 
-    # Create the detector. This is where the model loads (and downloads on the
-    # first ever run).
+    # Create the detector. This is where the selected local checkpoint loads.
     detector = RackDetector(model_path=model_path,
-                            confidence_threshold=confidence_threshold)
+                            confidence_threshold=confidence_threshold,
+                            image_size=image_size)
 
     # Time just the detection step. perf_counter is a high-resolution timer.
     start = time.perf_counter()
@@ -76,10 +78,13 @@ def _parse_args(argv):
     parser.add_argument("--output-dir", default=str(config.DEFAULT_OUTPUT_DIR),
                         help="Directory for annotated image, JSON, and summary.")
     parser.add_argument("--model", default=config.MODEL_PATH,
-                        help="Model weights (default: pretrained yolo11n.pt).")
+                        help="Model weights (default: selected project model).")
     parser.add_argument("--conf", type=float,
                         default=config.CONFIDENCE_THRESHOLD,
                         help="Detection confidence threshold (0-1).")
+    parser.add_argument("--imgsz", type=int,
+                        default=config.INFERENCE_IMAGE_SIZE,
+                        help="YOLO inference image size in pixels.")
     return parser.parse_args(argv)
 
 
@@ -98,6 +103,7 @@ def main(argv=None):
             output_dir=args.output_dir,
             model_path=args.model,
             confidence_threshold=args.conf,
+            image_size=args.imgsz,
         )
     except (FileNotFoundError, ValueError) as error:
         # These are the "expected" problems: a missing path, or an unsupported

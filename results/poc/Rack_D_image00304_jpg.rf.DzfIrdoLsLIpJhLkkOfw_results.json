@@ -1,0 +1,135 @@
+{
+  "image_path": "data/images/test/Rack_D_image00304_jpg.rf.DzfIrdoLsLIpJhLkkOfw.jpg",
+  "image_size": [
+    5696,
+    4272
+  ],
+  "model": "weights/labrack_yolo11s_960.pt",
+  "inference_image_size": 960,
+  "generated_utc": "2026-07-29T21:20:39+00:00",
+  "counts": {
+    "rack": 1,
+    "cap": 1,
+    "empty_slot": 7
+  },
+  "core_counts": {
+    "rack": 1,
+    "tube": 0,
+    "cap": 1,
+    "empty_slot": 7
+  },
+  "detections": [
+    {
+      "class_id": 0,
+      "class_name": "rack",
+      "confidence": 0.8641,
+      "box": [
+        1996,
+        1353,
+        3761,
+        3358
+      ]
+    },
+    {
+      "class_id": 2,
+      "class_name": "cap",
+      "confidence": 0.4774,
+      "box": [
+        2552,
+        1848,
+        2699,
+        2002
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2995,
+      "box": [
+        2750,
+        1444,
+        2931,
+        1694
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.293,
+      "box": [
+        2176,
+        1350,
+        2442,
+        1613
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2867,
+      "box": [
+        2797,
+        2106,
+        3731,
+        3379
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2682,
+      "box": [
+        2146,
+        1591,
+        2405,
+        1782
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2666,
+      "box": [
+        1952,
+        2384,
+        3693,
+        3369
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2656,
+      "box": [
+        2245,
+        2298,
+        2460,
+        2507
+      ]
+    },
+    {
+      "class_id": 3,
+      "class_name": "empty_slot",
+      "confidence": 0.2532,
+      "box": [
+        2104,
+        1760,
+        2372,
+        1951
+      ]
+    }
+  ],
+  "flags": [
+    {
+      "level": "review",
+      "message": "7 possible empty position(s) detected \u2014 requires human review."
+    },
+    {
+      "level": "review",
+      "message": "8 detection(s) below the 0.50 confidence threshold \u2014 manual review recommended."
+    }
+  ],
+  "review_recommended": true,
+  "disclaimer": "Educational prototype only. Not validated for clinical, diagnostic, or production laboratory use. Human review is required.",
+  "inference_seconds": 0.732
+}
