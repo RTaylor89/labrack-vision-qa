@@ -1,7 +1,7 @@
 """
 run.py — the front door of the whole program.
 
-This is the file you will actually run from the terminal. It wires the other modules
+This is the file I run from the terminal. It wires the other modules
 together in order: validate -> detect -> apply QA rules -> annotate -> report.
 
 Run it like this:
@@ -93,7 +93,7 @@ def main(argv=None):
     The entry point. Returns an exit code: 0 means success, 1 means a handled
     error (the shell can use this to know whether the run worked).
     """
-    # If argv is None we read the real command-line arguments. Passing argv in
+    # If argv is None I read the real command-line arguments. Passing argv in
     # explicitly is handy for testing.
     args = _parse_args(argv if argv is not None else sys.argv[1:])
 
@@ -107,9 +107,9 @@ def main(argv=None):
         )
     except (FileNotFoundError, ValueError) as error:
         # These are the "expected" problems: a missing path, or an unsupported
-        # or corrupt file. We print a clean message to stderr and exit with 1
+        # or corrupt file. I print a clean message to stderr and exit with 1
         # instead of dumping a scary stack trace. Any OTHER kind of error is a
-        # real bug, so we let it crash loudly rather than hide it.
+        # real bug, so I let it crash loudly rather than hide it.
         print(f"Error: {error}", file=sys.stderr)
         return 1
 
@@ -123,6 +123,6 @@ def main(argv=None):
 
 
 # This block runs only when the file is executed directly (python -m src.run),
-# not when it is imported. SystemExit passes our exit code back to the shell.
+# not when it is imported. SystemExit passes my exit code back to the shell.
 if __name__ == "__main__":
     raise SystemExit(main())

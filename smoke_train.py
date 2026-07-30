@@ -1,13 +1,13 @@
 """
-smoke_train.py — prove the training loop works before you commit real time to it.
+smoke_train.py — I use this to prove the loop works before I commit real time.
 
-A "smoke test" is an InfoSec/SecDevOps best practice: before you trust a system, you run a
-tiny, cheap check to see if it catches fire. Here we do a short training run
-(default 20 epochs on our labeled images) just to confirm the whole loop is
+A "smoke test" is an InfoSec/SecDevOps best practice: before I trust a system, I
+run a tiny, cheap check to see if it catches fire. Here I do a short training run
+(default 20 epochs on my labeled images) just to confirm the whole loop is
 wired correctly — data is found, my GPU is used, weights come out the other end.
 It is NOT meant to produce a good model. That comes later with the full run.
 
-Run it (from the repo root, with your venv active):
+I run it from the repository root with my virtual environment active:
 
     python smoke_train.py
 
@@ -27,7 +27,7 @@ from pathlib import Path
 import yaml  # PyYAML, already in requirements.txt
 
 
-# We keep smoke defaults small and cheap on purpose. Think "does it boot," not
+# I keep smoke defaults small and cheap on purpose. Think "does it boot," not
 # "is it accurate." Real hyperparameters will live in the full run.
 DEFAULT_DATA = "data/dataset.yaml"
 DEFAULT_MODEL = "yolo11n.pt"
@@ -39,10 +39,10 @@ RUN_NAME = "smoke"
 
 def preflight_gpu():
     """
-    Confirm PyTorch can see an available GPU before we train.
+    Confirm PyTorch can see an available GPU before I train.
 
     Training on CPU by accident is the classic time-sink: it "works" but crawls.
-    Like any good preflight check, we surface the state loudly and let the
+    Like any good preflight check, I surface the state loudly and let the
     operator decide. Returns the device string YOLO should use ("0", "mps", or
     "cpu").
     """
@@ -61,7 +61,7 @@ def preflight_gpu():
         print("[ OK ] Apple Metal GPU visible (MPS).")
         return "mps"
 
-    # Not a hard stop — you *can* smoke-test on CPU, we just surface it clearly.
+    # This is not a hard stop; I can smoke-test on CPU and report it clearly.
     print("[WARN] No CUDA or Apple Metal GPU visible to PyTorch — this will run "
           "on CPU and be slow. See RUNBOOK.md §1 for GPU setup.",
           file=sys.stderr)
@@ -73,9 +73,9 @@ def preflight_dataset(data_path):
     Sanity-check the dataset before handing it to the trainer.
 
     Cheap validation up front beats a confusing crash 30 seconds into training.
-    We confirm the yaml exists, then that the train/val image folders exist and
-    actually contain images. Missing labels are YOLO's job to complain about; we
-    just make sure there is something to train on.
+    I confirm the yaml exists, then that the train/val image folders exist and
+    actually contain images. Missing labels are YOLO's job to report; I only
+    make sure there is something to train on.
     """
     data_path = Path(data_path)
     if not data_path.exists():
@@ -139,7 +139,7 @@ def run_smoke_train(args, device):
     """
     Kick off the short training run and report where the weights landed.
 
-    We import ultralytics here (not at the top) so the preflight checks can run
+    I import ultralytics here (not at the top) so the preflight checks can run
     and fail fast without paying the cost of loading torch/ultralytics twice.
     """
     try:
@@ -162,7 +162,7 @@ def run_smoke_train(args, device):
         seed=0,          # reproducible: same run twice = same result
         project=str(Path("runs").resolve()),
         name=RUN_NAME,
-        exist_ok=True,   # overwrite runs/smoke so we don't pile up smoke1, smoke2
+        exist_ok=True,   # overwrite runs/smoke so I do not create smoke1, smoke2
         verbose=True,
     )
 

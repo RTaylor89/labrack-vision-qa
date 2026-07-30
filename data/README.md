@@ -2,8 +2,9 @@
 
 Staged, non-patient images only. No PHI, no real sample IDs, no production barcodes.
 
-Staged photography, image annotation, and testing methodology were contributed
-by Kate Leemann.
+I handled the dataset integration, validation, conversion, splitting, and
+supporting code. Kate Leemann collected the staged photos, completed the image
+annotations, and assisted me in designing the testing methodology.
 
 ## Layout
 
@@ -17,24 +18,25 @@ data/
 └── dataset.yaml    # class names + train/val/test paths
 ```
 
-Dataset images and labels are intentionally eligible for Git so project peers can
-validate the staged dataset. Before committing, verify every image uses staged,
-non-patient materials and contains no PHI, real sample IDs, or production barcodes.
+I intentionally keep dataset images and labels eligible for Git so my project
+peers can validate the staged dataset. Before I commit an image, I verify that
+it uses staged, non-patient materials and contains no PHI, real sample IDs, or
+production barcodes.
 
 ## Export from Roboflow
 
-1. Confirm the Roboflow project is an **Object Detection** project and that its
+1. I confirm that the Roboflow project is an **Object Detection** project and that its
    classes use this exact order: `rack`, `tube`, `cap`, `empty_slot`.
-2. Review every annotation, then create a dataset version. Keep a dedicated test
-   split that is hand-labeled and was never auto-labeled or used for training.
-3. Open that version, select **Download Dataset**, choose a YOLOv8/YOLO11
+2. I review every annotation, then create a dataset version. I keep a dedicated
+   test split that is hand-labeled and was never auto-labeled or used for training.
+3. I open that version, select **Download Dataset**, choose a YOLOv8/YOLO11
    object-detection export, and download the ZIP. These formats use the same
    normalized YOLO text-label structure expected by Ultralytics YOLO11.
-4. Extract the ZIP outside this repository first. Do not replace this project's
-   `data/dataset.yaml` blindly; Roboflow may generate different path names.
+4. I extract the ZIP outside this repository first. I do not replace
+   `data/dataset.yaml` blindly because Roboflow may generate different paths.
 
-Roboflow commonly exports folders named `train`, `valid`, and `test`, each with
-`images/` and `labels/` beneath it. Copy their contents into this repository as:
+I expect Roboflow folders named `train`, `valid`, and `test`, each with
+`images/` and `labels/` beneath it. I copy their contents into this repository as:
 
 ```text
 data/
@@ -49,11 +51,11 @@ data/
     └── test/
 ```
 
-For every image, preserve the matching image and label stem—for example,
+For every image, I preserve the matching image and label stem—for example,
 `rack_001.jpg` must pair with `rack_001.txt`. An empty `.txt` is valid for a
 reviewed image containing none of the four classes.
 
-After staging, confirm `data/dataset.yaml` still contains:
+After staging, I confirm that `data/dataset.yaml` still contains:
 
 ```yaml
 path: data
@@ -82,11 +84,12 @@ names:
 
 ## Current partial import
 
-The first Roboflow export was staged on 2026-07-29. It contains 140 images and
-is incomplete; do not treat it as the final training or evaluation dataset.
+I staged the first Roboflow export on 2026-07-29. It contains 140 images and is
+incomplete, so I do not treat it as the final training or evaluation dataset.
 
 The export placed every image in one training folder and used three source
-classes: `cap` (0), `empty` (1), and `rack` (2). During staging:
+classes: `cap` (0), `empty` (1), and `rack` (2). During staging, I applied these
+class mappings:
 
 - source `rack` ID 2 became project `rack` ID 0;
 - source `cap` ID 0 became project `cap` ID 2;
@@ -94,22 +97,22 @@ classes: `cap` (0), `empty` (1), and `rack` (2). During staging:
 - project `tube` ID 1 received no annotations because it was absent from this
   partial export.
 
-Seven Rack_B images intentionally have no `rack` annotation. A rack may be
-present, but it is not clearly visible enough in those images to support a
-reliable annotation. These are not treated as missing labels.
+Kate intentionally left seven Rack_B images without a `rack` annotation. A rack
+may be present, but it is not clearly visible enough in those images to support
+a reliable annotation. I do not treat those cases as missing labels.
 
-The `tube` class remains reserved in `dataset.yaml` as a roadmap goal. Tubes are
-not sufficiently visible in the current staged images, so the project will not
-claim tube detection or train that class until additional staged images provide
-clear, consistently annotatable tube views.
+I keep the `tube` class reserved in `dataset.yaml` as a roadmap goal. Tubes are
+not sufficiently visible in the current staged images, so I do not claim tube
+detection or train that class until additional staged images provide clear,
+consistently annotatable tube views.
 
-The source contained a mixture of polygon and box annotations. For the current
-YOLO11 object-detection pipeline, polygons were converted to tight axis-aligned
-boxes. The untouched source labels and Roboflow metadata are retained under
+The source contained a mixture of polygon and box annotations. For my current
+YOLO11 object-detection pipeline, I converted polygons to tight axis-aligned
+boxes. I retained the untouched source labels and Roboflow metadata under
 `source/roboflow_partial_2026-07-29/`.
 
 To prevent adjacent frames of the same physical rack from appearing in both
-training and evaluation, the split is grouped by rack identity:
+training and evaluation, I grouped the split by rack identity:
 
 | Split | Source groups | Images |
 |---|---|---:|
@@ -117,11 +120,12 @@ training and evaluation, the split is grouped by rack identity:
 | val | Rack_C | 5 |
 | test | Rack_D | 10 |
 
-`split_manifest.csv` records every assignment. Apply these same rack-based
-assignments when the completed annotation export is added; do not randomly
-redistribute the existing images.
+I record every assignment in `split_manifest.csv`. When I add the completed
+annotation export, I will preserve these rack-based assignments instead of
+randomly redistributing the existing images.
 
 ## Safety rule
 
-Use only empty tubes, clean racks, fake labels, and synthetic identifiers. If anything
-resembling real patient data appears in an image, remove it before committing.
+I use only empty tubes, clean racks, fake labels, and synthetic identifiers. If
+I find anything resembling real patient data in an image, I remove it before
+committing.

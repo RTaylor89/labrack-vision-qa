@@ -1,15 +1,15 @@
 """
-annotate.py — This is where we draw the detection boxes onto the image and save it.
+annotate.py — This is where I draw detection boxes onto the image and save it.
 
-This is the show our work step: it turns the list of detections into a
+This is my show-the-work step: it turns the list of detections into a
 picture a person can look at, with a colored rectangle and a label on each
 detected object.
 
-We use OpenCV (imported as cv2), a very common computer-vision library. Two
+I use OpenCV (imported as cv2), a very common computer-vision library. Two
 OpenCV quirks to keep in mind:
   - Colors are ordered (Blue, Green, Red), not (Red, Green, Blue).
-  - cv2.imread returns None instead of raising when it cannot read a file, so we
-    have to check for None ourselves.
+  - cv2.imread returns None instead of raising when it cannot read a file, so I
+    check for None myself.
 """
 
 from pathlib import Path
@@ -30,7 +30,7 @@ def annotate_image(image_path, detections, save_path):
 
     Returns the save_path (as a Path). Raises a clear error if the image cannot
     be read — this can happen if a file has a valid ".jpg" name but is actually
-    corrupt, which our earlier extension check cannot catch.
+    corrupt, which my earlier extension check cannot catch.
     """
     # Load the original image from disk. cv2 gives back a NumPy array of pixels,
     # or None if it failed.
@@ -51,7 +51,7 @@ def annotate_image(image_path, detections, save_path):
         # The bounding box itself. thickness=2 draws a 2-pixel-wide outline.
         cv2.rectangle(image, (x1, y1), (x2, y2), color, thickness=2)
 
-        # Now the label. First measure how big the text will be, so we can draw
+        # Now the label. I first measure how big the text will be, so I can draw
         # a filled colored strip behind it — otherwise white text can vanish
         # against light parts of the photo.
         label = _label_for(detection)
@@ -74,7 +74,7 @@ def annotate_image(image_path, detections, save_path):
     save_path = Path(save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # cv2.imwrite returns False on failure instead of raising, so we check it.
+    # cv2.imwrite returns False on failure instead of raising, so I check it.
     if not cv2.imwrite(str(save_path), image):
         raise IOError(f"Failed to write annotated image to {save_path}")
     return save_path

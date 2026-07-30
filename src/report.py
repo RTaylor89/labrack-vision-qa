@@ -1,7 +1,7 @@
 """
 report.py — turn the results into the two saved files a person reads.
 
-We produce two things from the same data:
+I produce two things from the same data:
   1. A JSON file — structured and machine-readable, good for later analysis.
   2. A plain-text summary — short and human-readable, good for a quick glance.
 
@@ -21,8 +21,8 @@ def build_results(detection_output, qa_result, inference_seconds=None):
     Merge the detector's output and the QA result into one dictionary.
 
     This combined dict is the "single record" of everything that happened for
-    one image. We add a UTC timestamp so results are self-dating, and optionally
-    the inference time (used to check our "under 3 seconds" speed target).
+    one image. I add a UTC timestamp so results are self-dating, and optionally
+    the inference time (used to check my "under 3 seconds" speed target).
     """
     results = {
         "image_path": detection_output["image_path"],
@@ -30,7 +30,7 @@ def build_results(detection_output, qa_result, inference_seconds=None):
         "model": detection_output["model"],
         "inference_image_size": detection_output.get("inference_image_size"),
         # isoformat() gives a standard, sortable timestamp like
-        # "2026-07-14T21:00:00+00:00". We use UTC so it is unambiguous.
+        # "2026-07-14T21:00:00+00:00". I use UTC so it is unambiguous.
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "counts": qa_result["counts"],
         "core_counts": qa_result["core_counts"],
@@ -39,7 +39,7 @@ def build_results(detection_output, qa_result, inference_seconds=None):
         "review_recommended": qa_result["review_recommended"],
         "disclaimer": config.DISCLAIMER,
     }
-    # Only include the timing if we were given it (the QA-only tests do not run
+    # I include timing only if it was provided (the QA-only tests do not run
     # the model, so they have no timing to report).
     if inference_seconds is not None:
         results["inference_seconds"] = round(inference_seconds, 3)
@@ -50,7 +50,7 @@ def build_summary(results):
     """
     Render the short, human-readable summary text from a results dict.
 
-    We build the text line by line into a list, then join it with newlines at
+    I build the text line by line into a list, then join it with newlines at
     the end. Building a list and joining once is cleaner (and faster) than
     repeatedly adding strings together.
     """
@@ -70,7 +70,7 @@ def build_summary(results):
         lines.append(f"  {name:<12} {count}")
 
     # If the model reported any OTHER classes (common with the pretrained model),
-    # list them separately so it is obvious they are not our project classes.
+    # list them separately so it is obvious they are not my project classes.
     other = {k: v for k, v in results["counts"].items()
              if k not in results["core_counts"]}
     if other:
@@ -88,7 +88,7 @@ def build_summary(results):
     else:
         lines.append("QA flags: none.")
 
-    # A one-line verdict. Even when nothing is flagged we still remind the reader
+    # A one-line verdict. Even when nothing is flagged I still remind the reader
     # that a human must review — this tool never signs off on its own.
     lines.append("")
     verdict = ("Manual review recommended."
@@ -105,8 +105,8 @@ def save_results(results, json_path, summary_path):
     """
     Write both output files to disk and return the summary text.
 
-    We create the output folders if needed, dump the results dict as pretty
-    (indented) JSON, and write the rendered summary. We return the summary text
+    I create the output folders if needed, dump the results dict as pretty
+    (indented) JSON, and write the rendered summary. I return the summary text
     so the caller (run.py) can also print it to the screen without rebuilding it.
     """
     json_path = Path(json_path)
