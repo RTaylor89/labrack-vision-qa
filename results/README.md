@@ -1,7 +1,7 @@
 # Results
 
-I produced these artifacts with real Ultralytics YOLO11 and project-pipeline
-runs on 2026-07-29. I used staged, non-patient images only.
+We produced these artifacts with real Ultralytics YOLO11 and project-pipeline
+runs on 2026-07-29. We used staged, non-patient images only.
 
 ## Selection run
 
@@ -14,7 +14,7 @@ runs on 2026-07-29. I used staged, non-patient images only.
 - selected checkpoint: epoch 82 by validation mAP50–95
 - training time: 4028.4 seconds
 
-I completed both one-epoch YOLO11s fit checks before the candidate runs:
+We completed both one-epoch YOLO11s fit checks before the candidate runs:
 640 pixels with batch 4, then 960 pixels with batch 2. PyTorch warned that two
 MPS operations do not have deterministic implementations. The seed was fixed,
 but an identical rerun is not guaranteed to be bit-for-bit identical.
@@ -29,8 +29,8 @@ but an identical rerun is not guaranteed to be bit-for-bit identical.
 | **YOLO11s / 960** | **0.825** | **0.594** | **0.807** | **0.858** |
 | YOLO11m / 640 | 0.730 | 0.520 | 0.742 | 0.381 |
 
-The larger medium model did not improve validation recall, so I did not promote
-it. I keep the complete machine-readable comparison in
+The larger medium model did not improve validation recall, so we did not promote
+it. We keep the complete machine-readable comparison in
 `metrics/candidate_comparison.csv`.
 
 ## Selected validation result
@@ -42,7 +42,7 @@ it. I keep the complete machine-readable comparison in
 | cap | 276 | 0.716 | 0.837 | 0.663 | 0.503 |
 | empty_slot | 166 | 0.807 | 0.858 | 0.817 | 0.405 |
 
-I do not report a tube metric because the tube class had no instances.
+We do not report a tube metric because the tube class had no instances.
 
 ## Rack_D diagnostic result
 
@@ -53,9 +53,9 @@ I do not report a tube metric because the tube class had no instances.
 | cap | 381 | 0.934 | 0.992 | 0.977 | 0.692 |
 | empty_slot | 431 | 0.842 | 0.761 | 0.839 | 0.346 |
 
-I originally grouped Rack_D away from training, but I used its baseline failures
-to inform this retraining progression. I therefore describe it as diagnostic
-held-out evidence, not a pristine final test. I need a new physical rack group
+We originally grouped Rack_D away from training, but we used its baseline failures
+to inform this retraining progression. We therefore describe it as diagnostic
+held-out evidence, not a pristine final test. We need a new physical rack group
 for an unbiased future final evaluation.
 
 ## Difficult POC image
@@ -65,7 +65,7 @@ annotation. At confidence 0.25 the selected model reported one rack, one cap,
 and seven possible empty positions. Eight detections were below the separate
 0.50 review threshold, so the application recommended manual review.
 
-I describe this as a possible issue requiring human review. I do not use the
+We describe this as a possible issue requiring human review. We do not use the
 prototype to approve a rack, make a clinical decision, or replace human
 inspection.
 

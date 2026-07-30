@@ -1,8 +1,8 @@
 # LabRack Vision QA — Fresh Ubuntu RTX 4090 Runbook
 
-This is the controlled sequence I will follow for the next reviewed dataset
-version on my Ubuntu RTX 4090 workstation. I will train all six candidates from
-isolated official Ultralytics YOLO11 base checkpoints. I will not copy, load,
+This is my controlled execution sequence for our next reviewed dataset version
+on my Ubuntu RTX 4090 workstation. I will train all six candidates from isolated
+official Ultralytics YOLO11 base checkpoints. I will not copy, load,
 resume, or fine-tune the current LabRack checkpoint created on the Apple M3
 system.
 
