@@ -4,8 +4,8 @@
 
 ## Contributors
 
-- Roderick Taylor
-- Kate Leemann
+- [Roderick Taylor](https://www.linkedin.com/in/rodjtaylor/)
+- [Kate Leemann](https://www.linkedin.com/in/kate-leemann-a21615236/)
 
 ## Contribution Roles
 
